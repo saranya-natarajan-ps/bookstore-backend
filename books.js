@@ -32,7 +32,7 @@ router.get("/:book_id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { title, author_id, genre_id, price, publication_date, image_url } =
+    const { title, author_id, genre_id, price, publication_date, image } =
       req.body;
     const newBook = await Book.create({
       title,
@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
       genre_id,
       price,
       publication_date,
-      image_url,
+      image,
     });
     res.status(201).json(newBook);
   } catch (error) {
@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
 
 router.put("/:book_id", async (req, res) => {
   try {
-    const { title, author_id, genre_id, price, publication_date, image_url } =
+    const { title, author_id, genre_id, price, publication_date, image } =
       req.body;
     const book = await Book.findByPk(req.params.book_id);
     if (!book) return res.status(404).json({ error: "Book not found" });
@@ -61,7 +61,7 @@ router.put("/:book_id", async (req, res) => {
     book.genre_id = genre_id;
     book.price = price;
     book.publication_date = publication_date;
-    book.image_url = image_url;
+    book.image = image;
     await book.save();
 
     res.status(200).json(book);

@@ -24,6 +24,28 @@ router.get("/:author_id", async (req, res) => {
   }
 });
 
+router.get("/:author_id/books", async (req, res) => {
+  try {
+    const authorId = req.params.author_id;
+
+    // Find author by ID
+    const author = await Author.findByPk(authorId);
+    if (!author) {
+      return res.status(404).json({ error: "Author not found" });
+    }
+
+    // Find books by author ID
+    const books = await Book.findAll({
+      where: { author_id: authorId },
+    });
+
+    res.status(200).json(books);
+  } catch (error) {
+    console.error("Error fetching books by author:", error);
+    res.status(500).json({ error: "Failed to fetch books by author" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const { name, biography } = req.body;
@@ -55,9 +77,19 @@ router.delete("/:author_id", async (req, res) => {
     const author = await Author.findByPk(req.params.author_id);
     if (!author) return res.status(404).json({ error: "Author not found" });
 
+    const books = await Book.findAll({
+      where: { author_id: req.params.author_id },
+    });
+
+    // Delete associated books
+    await Promise.all(books.map((book) => book.destroy()));
+
+    // Now delete the author
     await author.destroy();
+
     res.status(204).send();
   } catch (error) {
+    console.error("Error deleting author:", error);
     res.status(500).json({ error: "Failed to delete author" });
   }
 });

@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const axios = require("axios");
 
-const sequelize = new Sequelize("bookstore", "xxxx", "xxxxxxx", {
+const sequelize = new Sequelize("bookstore", "xxxx", "xxxxx", {
   host: "localhost",
   dialect: "mysql",
 });
@@ -90,7 +90,6 @@ const seedData = async (googleBooksApiKey) => {
     "Biography",
     "Thriller",
     "Comedy",
-    "Romance",
   ];
 
   const genreInstances = await Promise.all(
@@ -156,12 +155,11 @@ const seedData = async (googleBooksApiKey) => {
     "biography",
     "thriller",
     "comedy",
-    "romance",
   ];
 
   let totalBooksFetched = 0;
 
-  for (let i = 0; i < queries.length && totalBooksFetched < 350; i++) {
+  for (let i = 0; i < queries.length && totalBooksFetched < 150; i++) {
     await fetchBooks(queries[i], genres[i]);
     totalBooksFetched += 40; // 40 is the maxResults per fetchBooks call
   }
